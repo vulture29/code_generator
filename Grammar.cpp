@@ -723,9 +723,10 @@ bool Grammar::assignment(std::string idName)
 	/*std::cout << "assignment" << std::endl;*/
 	//TODO: Add Code Here
 
-	std::string datatype;
+	std::string idName;
+	std::string assignStmt;
 	ASTNode *root = NULL;
-	if (idList(datatype)
+	if (idUse(idName, assignStmt)
 		&& parse->curToken()
 		&& parse->curToken()->getSymType() == Token::SYMTYPE_EQUAL
 		&& parse->nextToken()
@@ -840,10 +841,11 @@ bool Grammar::ifStatement()
 		&& parse->nextToken()
 		&& conditionExpression(&root)
 		&& parse->curToken()
-		&& parse->curToken()->getSymType() == Token::SYMTYPE_RIGHT_PARENTHESIS)
+		&& parse->curToken()->getSymType() == Token::SYMTYPE_RIGHT_PARENTHESIS
+		&& parse->nextToken()
+		&& blockStatements())
 	{
-		parse->nextToken();
-		return blockStatements();
+		return true;
 	}
 	/*std::cout << "whileStatment [false]";*/
 	return false;

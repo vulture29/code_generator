@@ -723,19 +723,37 @@ bool Grammar::assignment(std::string idName)
 	/*std::cout << "assignment" << std::endl;*/
 	//TODO: Add Code Here
 
-	std::string idName;
-	std::string assignStmt;
-	ASTNode *root = NULL;
-	if (idUse(idName, assignStmt)
-		&& parse->curToken()
+	ASTNode *aryPos = NULL;
+	std::string str;
+	if(parse->curToken()
+		&& idUse(idName, str)
 		&& parse->curToken()->getSymType() == Token::SYMTYPE_EQUAL
 		&& parse->nextToken()
-		&& expression(&root)
-		&& parse->curToken()->getSymType() == Token::SYMTYPE_SEMICOLON)
+		&& expression(&aryPos)
+		&& parse->curToken()->getSymType() == Token::SYMTYPE_SEMICOLON
+		&& parse->nextToken())
 	{
+		parse->evaluateASTTree(aryPos);
+		std::cout<<"type = "<<aryPos->type<<" "<<str<<std::endl;
+		if(aryPos->type == ASTNode::OPERATION)
+		{
+			str.append(" = ");
+			str.append(aryPos->left->value);
+			str.append(" " + aryPos->value + " ");
+			str.append(aryPos->right->value);
+			str.append(";");
+			parse->getSymbolTable()->curFunction->funcStats.push(str);
+		}
+		else
+		{	
+			str.append(" = ");
+			str.append(aryPos->value);
+			str.append(";");
+			parse->getSymbolTable()->curFunction->funcStats.push(str);
+		}
+		delete aryPos;
 		return true;
 	}
-	/*std::cout << "funcCall [false]";*/
 	return false;
 }
 
@@ -832,7 +850,7 @@ bool Grammar::ifStatement()
 	/*std::cout << "ifStatement" << std::endl;*/
 	//TODO: Add Code Here
 
-	ASTNode *root = NULL;
+		ASTNode *root = NULL;
 	if (parse->curToken()
 		&& parse->curToken()->getID() == Token::IDTYPE_RESERVEDWORD
 		&& !strcmp(parse->curToken()->getTokenName().c_str(), "if")
@@ -841,13 +859,30 @@ bool Grammar::ifStatement()
 		&& parse->nextToken()
 		&& conditionExpression(&root)
 		&& parse->curToken()
-		&& parse->curToken()->getSymType() == Token::SYMTYPE_RIGHT_PARENTHESIS
-		&& parse->nextToken()
-		&& blockStatements())
+		&& parse->curToken()->getSymType() == Token::SYMTYPE_RIGHT_PARENTHESIS)
 	{
-		return true;
+		parse->evaluateASTTree(root);
+		int loopLable = parse->getSymbolTable()->lableCnt++;
+		int endLable = parse->getSymbolTable()->lableCnt++;
+		
+		Util::printIfStmt(parse->getSymbolTable(), root, loopLable, endLable);
+
+		delete root;
+		
+		parse->nextToken();
+		if (blockStatements())
+		{
+			std::string endLableStmt("c");
+			endLableStmt.append(Util::to_string(endLable));
+			endLableStmt.append(":;");
+
+			parse->getSymbolTable()->curFunction->funcStats.push(endLableStmt);
+			
+			std::cout << "ifStatement true" << std::endl;
+			return true;
+		}
 	}
-	/*std::cout << "whileStatment [false]";*/
+	std::cout << "ifStatement false" << std::endl;
 	return false;
 }
 

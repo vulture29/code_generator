@@ -722,20 +722,16 @@ bool Grammar::assignment(std::string idName)
 	*/
 	/*std::cout << "assignment" << std::endl;*/
 	//TODO: Add Code Here
-	std::string funcCallStmt;
-	std::queue<std::string> arguments;
-	if (parse->curToken()
-		&& idList(arguments)
+	
+	std::string datatype;
+	ASTNode *root = NULL;
+	if (idList(datatype)
 		&& parse->curToken()
 		&& parse->curToken()->getSymType() == Token::SYMTYPE_EQUAL
 		&& parse->nextToken()
-		&& expression(arguments)
+		&& expression(&root)
 		&& parse->curToken()->getSymType() == Token::SYMTYPE_SEMICOLON)
 	{
-		Util::createFuncCallStatement(idName, arguments, funcCallStmt);
-		funcCallStmt.push_back(';');
-		parse->getSymbolTable()->curFunction->funcStats.push(funcCallStmt);
-		parse->nextToken();
 		return true;
 	}
 	/*std::cout << "funcCall [false]";*/

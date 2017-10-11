@@ -722,7 +722,7 @@ bool Grammar::assignment(std::string idName)
 	*/
 	/*std::cout << "assignment" << std::endl;*/
 	//TODO: Add Code Here
-	
+
 	std::string datatype;
 	ASTNode *root = NULL;
 	if (idList(datatype)
@@ -842,37 +842,8 @@ bool Grammar::ifStatement()
 		&& parse->curToken()
 		&& parse->curToken()->getSymType() == Token::SYMTYPE_RIGHT_PARENTHESIS)
 	{
-		parse->evaluateASTTree(root);
-		int loopLable = parse->getSymbolTable()->lableCnt++;
-		int thenLable = parse->getSymbolTable()->lableCnt++;
-		int endLable = parse->getSymbolTable()->lableCnt++;
-		
-		std::string loopLableStmt("c");
-		loopLableStmt.append(Util::to_string(loopLable));
-		loopLableStmt.append(":;");
-		parse->getSymbolTable()->curFunction->funcStats.push(loopLableStmt);
-
-		Util::printIfStmt(parse->getSymbolTable(), root, thenLable, endLable);
-
-		delete root;
-		parse->getSymbolTable()->curFunction->whileLables.push(std::pair<int, int>(loopLable, endLable));
 		parse->nextToken();
-		if (blockStatements())
-		{
-			std::string loopGotoStmt("goto c");
-			loopGotoStmt.append(Util::to_string(loopLable));
-			loopGotoStmt.push_back(';');
-
-			std::string endLableStmt("c");
-			endLableStmt.append(Util::to_string(endLable));
-			endLableStmt.append(":;");
-
-			parse->getSymbolTable()->curFunction->funcStats.push(loopGotoStmt);
-			parse->getSymbolTable()->curFunction->funcStats.push(endLableStmt);
-			parse->getSymbolTable()->curFunction->whileLables.pop();
-			return true;
-		}
-		parse->getSymbolTable()->curFunction->whileLables.pop();
+		return blockStatements();
 	}
 	/*std::cout << "whileStatment [false]";*/
 	return false;

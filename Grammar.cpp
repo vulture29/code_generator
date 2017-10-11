@@ -734,7 +734,7 @@ bool Grammar::assignment(std::string idName)
 		&& parse->nextToken())
 	{
 		parse->evaluateASTTree(aryPos);
-		std::cout<<"type = "<<aryPos->type<<" "<<str<<std::endl;
+		// std::cout<<"type = "<<aryPos->type<<" "<<str<<std::endl;
 		if(aryPos->type == ASTNode::OPERATION)
 		{
 			str.append(" = ");
@@ -878,11 +878,11 @@ bool Grammar::ifStatement()
 
 			parse->getSymbolTable()->curFunction->funcStats.push(endLableStmt);
 			
-			std::cout << "ifStatement true" << std::endl;
+			// std::cout << "ifStatement true" << std::endl;
 			return true;
 		}
 	}
-	std::cout << "ifStatement false" << std::endl;
+	// std::cout << "ifStatement false" << std::endl;
 	return false;
 }
 

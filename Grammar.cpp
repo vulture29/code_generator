@@ -734,23 +734,19 @@ bool Grammar::assignment(std::string idName)
 		&& parse->nextToken())
 	{
 		parse->evaluateASTTree(aryPos);
-		// std::cout<<"type = "<<aryPos->type<<" "<<str<<std::endl;
+		str.append(" = ");
 		if(aryPos->type == ASTNode::OPERATION)
 		{
-			str.append(" = ");
 			str.append(aryPos->left->value);
 			str.append(" " + aryPos->value + " ");
 			str.append(aryPos->right->value);
-			str.append(";");
-			parse->getSymbolTable()->curFunction->funcStats.push(str);
 		}
 		else
 		{	
-			str.append(" = ");
 			str.append(aryPos->value);
-			str.append(";");
-			parse->getSymbolTable()->curFunction->funcStats.push(str);
 		}
+		str.append(";");
+		parse->getSymbolTable()->curFunction->funcStats.push(str);
 		delete aryPos;
 		return true;
 	}
@@ -850,7 +846,7 @@ bool Grammar::ifStatement()
 	/*std::cout << "ifStatement" << std::endl;*/
 	//TODO: Add Code Here
 
-		ASTNode *root = NULL;
+	ASTNode *root = NULL;
 	if (parse->curToken()
 		&& parse->curToken()->getID() == Token::IDTYPE_RESERVEDWORD
 		&& !strcmp(parse->curToken()->getTokenName().c_str(), "if")
@@ -877,8 +873,6 @@ bool Grammar::ifStatement()
 			endLableStmt.append(":;");
 
 			parse->getSymbolTable()->curFunction->funcStats.push(endLableStmt);
-			
-			// std::cout << "ifStatement true" << std::endl;
 			return true;
 		}
 	}

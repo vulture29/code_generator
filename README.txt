@@ -1,3 +1,18 @@
+Xingyao Huang
+xhuang17
+
+Changes I made.
+
+Two functions.
+
+1. For IfStatement, i refered whileStatement function. In case of while, we have to keep 3 labels while for if statement, we need only two since we don't need to come back for loop. So i just added two labels for If and for one label, I added goto statement. for ex: If condition true then goto c1.
+
+2. For assignment, I first judge if it satisify the grammar, if yes then judge if the expersion in the assignment is operation, if yes push 3 value to function statment, otherwise push 1. if not satisify the grammar just return false.
+
+
+
+
+
 How to compile the program?
 Use make command to compile the program.
 =====================================================================================================================================================================================
